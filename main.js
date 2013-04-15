@@ -2,12 +2,13 @@
 
 var page = require('webpage').create(),
     system = require('system'),
+    w = 1024, h = 2000,
     address, output, size;
 
     address = system.args[1];
     output = system.args[2];
-    page.viewportSize = { width: 1024, height: 2000 };
-    page.clipRect = { width: 1024, height: 2000 };
+    page.viewportSize = { width: w, height: h };
+    page.clipRect = { width: w, height: h };
     if (system.args.length === 5) // if a resolution was supplied
     {
         var w = system.args[3], h = system.args[4];
@@ -27,6 +28,17 @@ var page = require('webpage').create(),
             console.log('Unable to load the address!');
         } else {
             window.setTimeout(function () {
+		console.log(page.title);
+		var data = page.evaluate(function () {
+		    return {
+			docHeight: document.height,
+			excerpt: document.getElementsByTagName("p")[0]
+		    };
+		});
+		if (typeof data.excerpt !== "undefined") {
+		    console.log(' - ' + data.excerpt.textContent);
+		}
+		page.clipRect.height = Math.min(data.docHeight, h);
                 page.render(output);
                 phantom.exit();
             }, 200);
