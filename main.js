@@ -23,22 +23,28 @@ var page = require('webpage').create(),
             height: h
         };
     }
+
+    function logParameter(key, value) {
+        console.log("!!!" + key + "!!!" + value);
+    }
+
     page.open(address, function (status) {
         if (status !== 'success') {
             console.log('Unable to load the address!');
         } else {
-            window.setTimeout(function () {
-		console.log(page.title);
-		var data = page.evaluate(function () {
-		    return {
-			docHeight: document.height,
-			excerpt: document.getElementsByTagName("p")[0]
-		    };
-		});
-		if (typeof data.excerpt !== "undefined") {
-		    console.log(' - ' + data.excerpt.textContent);
-		}
-		page.clipRect.height = Math.min(data.docHeight, h);
+            window.setTimeout(function () { // have to give phantom time to start up
+                
+                logParameter("title", page.title);
+
+                // extract some data from the page:
+        		var data = page.evaluate(function () {
+        		    return {
+                        excerpt: document.getElementsByTagName("p")[0]
+        		    };
+        		});
+        		if (typeof data.excerpt !== "undefined") {
+        		    logParameter("excerpt", data.excerpt.textContent);
+        		}
                 page.render(output);
                 phantom.exit();
             }, 200);
