@@ -2,7 +2,7 @@
 
 var page = require('webpage').create(),
     system = require('system'),
-    w = 1024, h = 2000,
+    w = 1024, h = 768,
     address, output, size;
 
     address = system.args[1];
