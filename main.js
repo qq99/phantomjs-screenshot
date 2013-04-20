@@ -39,11 +39,15 @@ var page = require('webpage').create(),
                 // extract some data from the page:
         		var data = page.evaluate(function () {
         		    return {
-                        excerpt: document.getElementsByTagName("p")[0]
+                        excerpt: document.getElementsByTagName("p")[0].textContent
         		    };
         		});
         		if (typeof data.excerpt !== "undefined") {
-        		    logParameter("excerpt", data.excerpt.textContent);
+                    data.excerpt = data.excerpt.trim().replace(/\n/g, "");
+                    if (data.excerpt.length > 512) {
+                        data.excerpt = data.excerpt.substring(0,512) + "...";
+                    }
+        		    logParameter("excerpt", data.excerpt);
         		}
                 page.render(output);
                 phantom.exit();
